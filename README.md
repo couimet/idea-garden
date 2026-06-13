@@ -15,10 +15,4 @@ and cross-references over time as it grows (or let it sit).
   point at any other repo with `owner/repo#NN`.
 - **Promote when ready.** If an idea grows into real work, open a repo (or move
   it to an existing one) and link back here.
-
-## Private mirror
-
-Ideas that can't be public live in
-[`idea-garden-private`](https://github.com/couimet/idea-garden-private). The two
-cross-reference each other; default to the private repo when in doubt, since
-public is effectively permanent.
+  
