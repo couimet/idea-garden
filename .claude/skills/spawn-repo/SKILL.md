@@ -14,11 +14,13 @@ Create a new GitHub repo from an idea-garden issue, copy working docs, and hand 
 
 Runs `.claude/skills/spawn-repo/spawn-repo.sh` which:
 
-1. Creates the repo on GitHub (`gh repo create couimet/<name>`)
-2. Clones it as a sibling directory (`../<name>/`)
+1. Creates the repo on GitHub (skips if it already exists)
+2. Clones it as a sibling directory (skips if `../<name>/` already exists)
 3. Copies `.claude-work/issues/<ID>/` into the new repo
 4. Prepends a bootstrap banner to the new repo's README
 5. Posts a handoff comment on the idea-garden issue
+
+The script is idempotent — safe to re-run if a step fails partway through.
 
 ## Input
 

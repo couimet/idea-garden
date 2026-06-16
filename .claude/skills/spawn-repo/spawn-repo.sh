@@ -56,20 +56,28 @@ ISSUE_URL="https://github.com/couimet/idea-garden/issues/${ISSUE_ID}"
 WORKDOCS=".claude-work/issues/${ISSUE_ID}"
 [[ -d "$WORKDOCS" ]] || { echo "Error: $WORKDOCS not found" >&2; exit 1; }
 
-# --- create repo -----------------------------------------------------------
+# --- create repo (skip if exists) ------------------------------------------
 
 echo "=== Creating repo: couimet/${REPO_NAME} (${VISIBILITY}) ==="
-if [[ -n "$DESCRIPTION" ]]; then
-  gh repo create "couimet/${REPO_NAME}" $VISIBILITY --description "$DESCRIPTION"
+if gh repo view "couimet/${REPO_NAME}" &>/dev/null; then
+  echo "Repo already exists, skipping creation."
 else
-  gh repo create "couimet/${REPO_NAME}" $VISIBILITY
+  if [[ -n "$DESCRIPTION" ]]; then
+    gh repo create "couimet/${REPO_NAME}" $VISIBILITY --description "$DESCRIPTION"
+  else
+    gh repo create "couimet/${REPO_NAME}" $VISIBILITY
+  fi
 fi
 
 # --- clone as sibling ------------------------------------------------------
 
 TARGET="../${REPO_NAME}"
-echo "=== Cloning into ${TARGET} ==="
-git clone "https://github.com/couimet/${REPO_NAME}.git" "$TARGET"
+if [[ -d "$TARGET" ]]; then
+  echo "Local clone already exists at ${TARGET}, skipping clone."
+else
+  echo "=== Cloning into ${TARGET} ==="
+  git clone "https://github.com/couimet/${REPO_NAME}.git" "$TARGET"
+fi
 
 # --- copy working docs -----------------------------------------------------
 
@@ -81,8 +89,9 @@ cp -r "${WORKDOCS}/" "${TARGET}/.claude-work/issues/${ISSUE_ID}/"
 
 README="${TARGET}/README.md"
 BANNER=$(banner "$ISSUE_URL")
-if [[ -f "$README" ]]; then
-  # Prepend banner to existing README
+if grep -qF '<!-- Remove this banner' "$README" 2>/dev/null; then
+  echo "Banner already present, skipping."
+elif [[ -f "$README" ]]; then
   printf '%s\n\n%s\n' "$BANNER" "$(cat "$README")" > "$README"
 else
   echo "$BANNER" > "$README"
