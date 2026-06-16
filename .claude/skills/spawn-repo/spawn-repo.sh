@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# --- helpers ---------------------------------------------------------------
+
+usage() {
+  cat <<'EOF'
+Usage: spawn-repo.sh <repo-name> [--private] [--description <desc>]
+
+Creates a new GitHub repo under couimet, clones it as a sibling directory,
+copies the current issue's .claude-work/ docs into it, prepends a bootstrap
+banner to its README, and posts a handoff comment on the parent issue.
+
+Run from the idea-garden repo root, on an issues/<ID> branch.
+EOF
+  exit 1
+}
+
+banner() {
+  local issue_url="$1"
+  cat <<EOF
+<!-- Remove this banner once the repo has real documentation. -->
+> [!NOTE]
+> Bootstrapped from [${issue_url}](${issue_url}).
+> Active plan: \`.claude-work/issues/${ISSUE_ID}/active-plan\`
+EOF
+}
+
+# --- args ------------------------------------------------------------------
+
+REPO_NAME=""
+VISIBILITY="--public"
+DESCRIPTION=""
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --private) VISIBILITY="--private"; shift ;;
+    --description) DESCRIPTION="$2"; shift 2 ;;
+    -h|--help) usage ;;
+    *) REPO_NAME="$1"; shift ;;
+  esac
+done
+
+[[ -z "$REPO_NAME" ]] && usage
+
+# --- detect issue context --------------------------------------------------
+
+BRANCH=$(git branch --show-current)
+if [[ "$BRANCH" =~ ^issues/([0-9]+) ]]; then
+  ISSUE_ID="${BASH_REMATCH[1]}"
+else
+  echo "Error: not on an issues/<ID> branch (current: $BRANCH)" >&2
+  exit 1
+fi
+
+ISSUE_URL="https://github.com/couimet/idea-garden/issues/${ISSUE_ID}"
+WORKDOCS=".claude-work/issues/${ISSUE_ID}"
+[[ -d "$WORKDOCS" ]] || { echo "Error: $WORKDOCS not found" >&2; exit 1; }
+
+# --- create repo -----------------------------------------------------------
+
+echo "=== Creating repo: couimet/${REPO_NAME} (${VISIBILITY}) ==="
+if [[ -n "$DESCRIPTION" ]]; then
+  gh repo create "couimet/${REPO_NAME}" $VISIBILITY --description "$DESCRIPTION"
+else
+  gh repo create "couimet/${REPO_NAME}" $VISIBILITY
+fi
+
+# --- clone as sibling ------------------------------------------------------
+
+TARGET="../${REPO_NAME}"
+echo "=== Cloning into ${TARGET} ==="
+git clone "https://github.com/couimet/${REPO_NAME}.git" "$TARGET"
+
+# --- copy working docs -----------------------------------------------------
+
+echo "=== Copying ${WORKDOCS} ==="
+mkdir -p "${TARGET}/.claude-work/issues/${ISSUE_ID}"
+cp -r "${WORKDOCS}/" "${TARGET}/.claude-work/issues/${ISSUE_ID}/"
+
+# --- banner README ---------------------------------------------------------
+
+README="${TARGET}/README.md"
+BANNER=$(banner "$ISSUE_URL")
+if [[ -f "$README" ]]; then
+  # Prepend banner to existing README
+  printf '%s\n\n%s\n' "$BANNER" "$(cat "$README")" > "$README"
+else
+  echo "$BANNER" > "$README"
+fi
+
+# --- comment on parent issue -----------------------------------------------
+
+COMMENT="Repo created at https://github.com/couimet/${REPO_NAME}. Working docs copied to \`.claude-work/issues/${ISSUE_ID}/\`. Continue work from that repo."
+echo "=== Posting handoff comment ==="
+gh issue comment "$ISSUE_ID" --repo couimet/idea-garden --body "$COMMENT"
+
+# --- done ------------------------------------------------------------------
+
+echo
+echo "=== Done ==="
+echo "Repo:    https://github.com/couimet/${REPO_NAME}"
+echo "Local:   ${TARGET}"
+echo "Docs:    ${TARGET}/.claude-work/issues/${ISSUE_ID}/"
+echo
+echo "Open a new workspace at ${TARGET} to continue."
