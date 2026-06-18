@@ -177,7 +177,7 @@ echo "=== Committing and pushing working docs in ${TARGET} ==="
     echo "No changes to commit (docs already committed), skipping push."
   else
     git commit -m "[chore] Bootstrap: handoff brief and issue docs from ${SEED_URL}"
-    git push origin HEAD
+    git push --set-upstream origin "$(git branch --show-current)"
   fi
 )
 
