@@ -26,9 +26,17 @@ banner() {
   cat <<EOF
 <!-- Remove this banner once the repo has real documentation. -->
 > [!NOTE]
-> Bootstrapped from idea-garden seed issue: ${seed_url}
-> Tracking issue in this repo: ${dest_issue_url}
-> Start here (agent handoff brief): \`.claude-work/issues/${dest_id}/HANDOFF.md\`
+> Bootstrapped from ${seed_url}
+> Tracking issue: ${dest_issue_url}
+>
+> **Copy-paste this into a Claude Code session in this repo:**
+>
+>     /start-issue ${dest_id}
+>
+>     Before writing any code, review \`.claude-work/issues/${dest_id}/HANDOFF.md\`
+>     closely and integrate it into the implementation plan. It contains
+>     all locked decisions, the target design, data model, constraints,
+>     and verbatim external facts this project depends on.
 EOF
 }
 
@@ -73,8 +81,8 @@ WORKDOCS=".claude-work/issues/${SEED_ID}"
 [[ -d "$WORKDOCS" ]] || { echo "Error: $WORKDOCS not found" >&2; exit 1; }
 # Handoff brief is the required agent entry point (see handoff-template.md).
 [[ -f "${WORKDOCS}/HANDOFF.md" ]] || { echo "Error: ${WORKDOCS}/HANDOFF.md not found (create it from handoff-template.md before spawning)" >&2; exit 1; }
-if grep -qE '\{\{|<!--' "${WORKDOCS}/HANDOFF.md"; then
-  echo "Error: ${WORKDOCS}/HANDOFF.md contains unreplaced placeholders ({{...}}) or guidance comments (<!--). Fill every placeholder and delete all <!-- guidance comments before spawning." >&2
+if grep -qE '\{\{' "${WORKDOCS}/HANDOFF.md"; then
+  echo "Error: ${WORKDOCS}/HANDOFF.md contains unreplaced {{...}} placeholders. Fill every placeholder before spawning." >&2
   exit 1
 fi
 
@@ -120,7 +128,7 @@ else
   DEST_BODY=$(cat <<EOF
 Spawned from an idea captured in idea-garden: ${SEED_URL}
 
-The agent handoff brief and all locked decisions live in this repo at \`.claude-work/issues/<this issue number>/HANDOFF.md\` (the directory is named after this issue number). Start there.
+**To the agent running /start-issue on this issue:** before creating an implementation plan, read \`.claude-work/issues/<this issue number>/HANDOFF.md\` closely. It is the authoritative source — all locked decisions, the target design, data model, constraints, and verbatim external facts (CodeRabbit Q&A, rate-limit comment format sample) live there. Integrate them into the plan.
 
 ${SPAWN_MARKER}
 EOF
@@ -196,6 +204,7 @@ fi
 echo
 echo "=== Done ==="
 echo "Repo:           https://github.com/couimet/${REPO_NAME}"
+echo "Clone:          git clone https://github.com/couimet/${REPO_NAME}.git"
 echo "Local:          ${TARGET}"
 echo "Tracking issue: ${DEST_ISSUE_URL}"
 echo "Handoff brief:  ${DEST_WORKDOCS}/HANDOFF.md"
