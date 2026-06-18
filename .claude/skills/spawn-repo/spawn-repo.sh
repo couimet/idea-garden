@@ -37,6 +37,8 @@ banner() {
 >     closely and integrate it into the implementation plan. It contains
 >     all locked decisions, the target design, data model, constraints,
 >     and verbatim external facts this project depends on.
+>
+>     Do you have /question for me before you start ?
 EOF
 }
 
