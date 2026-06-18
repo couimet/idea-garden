@@ -54,9 +54,14 @@ if [[ "$REPO_NAME" == "idea-garden" ]]; then
 fi
 
 # --- detect issue context --------------------------------------------------
+# Guard: ensure we are running in the correct repository before mutating anything.
+if ! git remote get-url origin | grep -qE 'github\.com[:/]couimet/idea-garden'; then
+  echo "Error: this script must run from couimet/idea-garden" >&2
+  exit 1
+fi
 
 BRANCH=$(git branch --show-current)
-if [[ "$BRANCH" =~ ^issues/([0-9]+) ]]; then
+if [[ "$BRANCH" =~ ^issues/([0-9]+)$ ]]; then
   SEED_ID="${BASH_REMATCH[1]}"
 else
   echo "Error: not on an issues/<ID> branch (current: $BRANCH)" >&2
@@ -105,7 +110,7 @@ fi
 
 SPAWN_MARKER="<!-- spawned-from: idea-garden#${SEED_ID} -->"
 echo "=== Resolving tracking issue in couimet/${REPO_NAME} ==="
-DEST_ID=$(gh issue list --repo "couimet/${REPO_NAME}" --state all --limit 200 --json number,body \
+DEST_ID=$(gh issue list --repo "couimet/${REPO_NAME}" --state all --json number,body \
   --jq "map(select(.body | contains(\"${SPAWN_MARKER}\"))) | (.[0].number // empty)")
 
 if [[ -n "$DEST_ID" ]]; then
@@ -170,7 +175,7 @@ echo "=== Committing and pushing working docs in ${TARGET} ==="
 
 COMMENT="Spawned to https://github.com/couimet/${REPO_NAME}. Tracking continues in ${DEST_ISSUE_URL}. Agent handoff brief copied to that repo at \`.claude-work/issues/${DEST_ID}/HANDOFF.md\`."
 echo "=== Posting handoff comment on seed issue ==="
-if gh api "repos/couimet/idea-garden/issues/${SEED_ID}/comments" --jq '.[].body' 2>/dev/null | grep -qF "Spawned to https://github.com/couimet/${REPO_NAME}"; then
+if gh api "repos/couimet/idea-garden/issues/${SEED_ID}/comments" --paginate --jq '.[].body' 2>/dev/null | grep -qF "Spawned to https://github.com/couimet/${REPO_NAME}"; then
   echo "Handoff comment already posted, skipping."
 else
   gh issue comment "$SEED_ID" --repo couimet/idea-garden --body "$COMMENT"

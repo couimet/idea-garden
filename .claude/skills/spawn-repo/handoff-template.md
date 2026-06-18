@@ -20,7 +20,7 @@ Rules:
 
 One-line purpose: {{ONE_LINE_PURPOSE}}
 
-Origin: spawned from {{IDEA_GARDEN_ISSUE_URL}} (idea-garden). Tracking issue in this repo: {{DEST_ISSUE_REF}}.
+Origin: spawned from {{IDEA_GARDEN_ISSUE_URL}} (idea-garden).
 
 ## TL;DR for the agent
 
