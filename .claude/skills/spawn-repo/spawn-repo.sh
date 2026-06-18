@@ -31,7 +31,7 @@ banner() {
 >
 > **Copy-paste this into a Claude Code session in this repo:**
 >
->     /start-issue ${dest_id}
+>     /start-issue ${dest_issue_url}
 >
 >     Before writing any code, review \`.claude-work/issues/${dest_id}/HANDOFF.md\`
 >     closely and integrate it into the implementation plan. It contains
