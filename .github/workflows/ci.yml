@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  docs:
+    name: Docs checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Lint markdown
+        uses: couimet/github-actions/markdownlint@main
+        with:
+          markdownlint-version: 0.23.2
+
+      - name: Check formatting
+        uses: couimet/github-actions/prettier@main
+        with:
+          prettier-version: 3.9.6
+
+      - name: Check links
+        uses: ./.github/actions/lychee-check
+        with:
+          lychee-version: v0.24.2

@@ -1,5 +1,7 @@
 # idea-garden
 
+[![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/couimet/idea-garden?label=CodeRabbit+Reviews)](https://coderabbit.ai)
+
 A low-friction inbox for rough ideas that don't belong to any single repo yet.
 
 When a thought, question, or "someday" project can't be tied to an existing
@@ -15,4 +17,8 @@ and cross-references over time as it grows (or let it sit).
   point at any other repo with `owner/repo#NN`.
 - **Promote when ready.** If an idea grows into real work, open a repo (or move
   it to an existing one) and link back here.
-  
+
+## Standards
+
+`couimet/idea-garden` is also the home for canonical cross-project standards.
+See the [standards index](docs/standards/README.md).

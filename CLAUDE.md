@@ -5,3 +5,11 @@ A low-friction inbox for rough ideas. When an idea matures into real work, it ei
 ## Spawning new repos from issues
 
 When an issue's implementation plan creates a new repo, invoke `/spawn-repo <name>`. The skill handles repo creation, cloning, working-doc copy, README banner, and the handoff comment. See `.claude/skills/spawn-repo/SKILL.md` for the full workflow.
+
+## Standards
+
+`docs/standards/` holds canonical cross-project policy for repositories maintained by `couimet` (see `docs/standards/README.md` for the index). Change standards through pull requests in this repo.
+
+## Docs CI
+
+The CI workflow lints and formats Markdown via `couimet/github-actions/markdownlint` and `couimet/github-actions/prettier`, and checks links with the lychee action at `.github/actions/lychee-check`. The lychee action is an **incubated copy** pending migration to `couimet/github-actions`; once migrated, remove the local copy and reference `couimet/github-actions/lychee-check@main`.
