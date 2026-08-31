@@ -47,7 +47,7 @@ For **published packages**, add npm version and download badges. The badge must 
 
 ### VS Code extensions
 
-For **published extensions**, add VS Code Marketplace and Open VSX badges, each linking to its own marketplace listing.
+For a **published extension**, add a VS Code Marketplace badge when the extension has a VS Code Marketplace listing, and an Open VSX badge when it has an Open VSX listing. Each badge links to its own marketplace listing.
 
 ```text
 [![VS Code Marketplace version](https://vsmarketplacebadges.dev/version/<publisher>.<name>.svg)](https://marketplace.visualstudio.com/items?itemName=<publisher>.<name>)
@@ -97,7 +97,7 @@ Any other deviation from this policy requires a **short documented reason**, wri
 Before merging any README change, and during periodic sweeps:
 
 1. **Each badge image renders.** Fetch the badge URL; it must return an image, not an error.
-2. **Each badge destination link is correct.** The link must lead to the repository, package, marketplace listing, or license file the badge claims.
+2. **Each badge destination link is correct.** The link must lead to the repository, package, marketplace listing, license file, or provider site (for example coderabbit.ai) the badge claims.
 3. **Each metric represents its intended repository or package.** The number in the badge must be the number the label describes.
 4. **Treat transient upstream failures separately from broken configuration.** A badge that fails because shields.io or npm is down is an upstream outage, not a policy violation; a badge that renders the wrong value or points at the wrong target is a configuration defect and must be fixed.
 
