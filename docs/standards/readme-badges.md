@@ -58,10 +58,10 @@ Use install or download badges in the same way when the README reports adoption.
 
 ### License
 
-Add a license badge **when the repository has a public license**, linking to the license file in the repository.
+Add a license badge **when the repository has a public license**, linking to the license file in the repository. The badge's license value and link must match the repository's actual public license.
 
 ```text
-[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+[![License](https://img.shields.io/badge/license-<license>-green)](./LICENSE)
 ```
 
 ## Monorepo Rules

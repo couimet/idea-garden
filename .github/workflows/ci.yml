@@ -31,3 +31,12 @@ jobs:
         uses: ./.github/actions/lychee-check
         with:
           lychee-version: v0.24.2
+
+  shell:
+    name: Shell checks and BATS tests
+    permissions:
+      contents: read
+      pull-requests: write
+    uses: couimet/github-actions/shell-ci-checks.yml@main
+    with:
+      test-directory: bats-tests/shell
