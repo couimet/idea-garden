@@ -33,7 +33,7 @@ LYCHEE
 
 @test "run.sh defaults to **/*.md when PATHS is unset" {
   setup_lychee_mock
-  run bash "$SCRIPT"
+  run env -u PATHS bash "$SCRIPT"
   [ "$status" -eq 0 ]
   grep -qxF -- "**/*.md" "${TEST_TEMP_DIR}/lychee.log"
 }
