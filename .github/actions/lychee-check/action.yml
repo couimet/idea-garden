@@ -1,0 +1,30 @@
+name: 'Run lychee link check'
+description: 'Installs lychee at a pinned version and checks links in the given paths. Incubated locally; structured for migration to couimet/github-actions, where version tracking will move to a package.json.'
+inputs:
+  lychee-version:
+    description: 'Version of lychee to install, in vX.Y.Z or X.Y.Z form. Pinned here because the consuming repo has no package.json to track it; once migrated, the action reads its own package.json instead.'
+    required: false
+    default: 'v0.24.2'
+  paths:
+    description: 'Space-separated paths or globs to check. Lychee resolves ** globs itself, so they must not be shell-expanded.'
+    required: false
+    default: '**/*.md'
+  working-directory:
+    description: 'Directory to run lychee in. Set when the target lives in a subdirectory.'
+    required: false
+    default: '.'
+runs:
+  using: composite
+  steps:
+    - name: Install lychee
+      shell: bash
+      env:
+        LYCHEE_VERSION: ${{ inputs.lychee-version }}
+      run: bash "${{ github.action_path }}/install.sh"
+
+    - name: Run lychee
+      shell: bash
+      env:
+        PATHS: ${{ inputs.paths }}
+        WORKING_DIRECTORY: ${{ inputs.working-directory }}
+      run: bash "${{ github.action_path }}/run.sh"
