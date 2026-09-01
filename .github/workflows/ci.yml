@@ -24,8 +24,6 @@ jobs:
 
       - name: Check formatting
         uses: couimet/github-actions/prettier@main
-        with:
-          prettier-version: 3.9.6
 
       - name: Check links
         uses: ./.github/actions/lychee-check
