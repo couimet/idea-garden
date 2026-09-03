@@ -34,13 +34,14 @@ uses: actions/checkout@v4
 
 ### CI002: Internal actions always use @main, never a commit SHA
 
-Reference all `couimet/github-actions/*` actions with `@main`: `uses: couimet/github-actions/typescript-ci@main`.
-
-Never pin to a commit SHA or tag for `couimet/github-actions` actions.
+<rule id="couimet-actions-main" priority="critical">
+  <title>couimet/* GitHub Actions always use @main</title>
+  <never>Pin a `couimet/*` GitHub Action to a commit SHA in workflows or composite action definitions</never>
+  <do>Always reference `couimet/*` actions with `@main` to get the latest version</do>
+  <rationale>The author wants these actions to auto-update across all repos</rationale>
+</rule>
 
 `@main` is the intended rolling release channel for first-party actions. We control the repo, so breaking changes are intentional and versioned. SHAs add pin-update churn with no benefit for actions we own.
-
-<!-- rule-id: couimet-actions-main -->
 
 ### CI003: Composite actions reference internal actions by full path, not ./
 
