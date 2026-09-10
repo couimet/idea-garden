@@ -42,7 +42,7 @@ For **published packages**, add npm version and download badges. The badge must 
 
 ```text
 [![npm version](https://img.shields.io/npm/v/<package>)](https://www.npmjs.com/package/<package>)
-[![npm downloads](https://img.shields.io/npm/dw/<package>)](https://www.npmjs.com/package/<package>)
+[![npm downloads](https://img.shields.io/npm/dm/<package>)](https://www.npmjs.com/package/<package>)
 ```
 
 ### VS Code extensions
@@ -80,6 +80,8 @@ Place badges in a **single row directly under the title**, before the descriptio
 2. **Quality** — how the project is kept honest: CodeRabbit, CI build status.
 3. **Coverage** — how well it is tested: Codecov.
 4. **License** — the terms it is distributed under.
+
+Grouping is logical, not visual. Badges that report the same kind of measure stay adjacent, and a badge never leaves its group to sit beside one it resembles. Placement follows what a badge measures, never how it renders.
 
 A README shows only the badges its rules require; there is no need to fill the row.
 
